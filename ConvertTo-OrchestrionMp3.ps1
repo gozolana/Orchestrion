@@ -10,7 +10,7 @@ process {
     $FFMPEG_INSTALL_PATH = '.\ffmpeg\bin'
     $FFPROBE_CMD = Join-Path $FFMPEG_INSTALL_PATH ffprobe.exe
     $FFMPEG_CMD = Join-Path $FFMPEG_INSTALL_PATH ffmpeg.exe
- 
+    
     InstallFFMpeg
 
     $oggPath = Get-ChildItem (Join-Path '.\SaintCoinach\*' $Orchestrion.Search)
@@ -28,7 +28,6 @@ process {
 
     $json = & $FFPROBE_CMD -v quiet -print_format json -show_format -show_streams $oggPath | ConvertFrom-Json
 
-    $WORKFILE_METADATA = '.\metadata.txt'
     $metadata = @"
 ;FFMETADATA1
 album=Final Fantasy XIV（Orchestrion）
@@ -38,8 +37,10 @@ track=$($Orchestrion.Track)
 artist=Square Enix
 composer=祖堅 正慶
 "@
-    $metadataLines = $metadata -split '\r\n'
-    Out-FileNoBOM -Lines $metadataLines -FilePath $WORKFILE_METADATA
+
+    $WORKFILE_METADATA = '.\metadata.txt'
+    # Walkaround to save as Bomless UTF8
+    [Text.Encoding]::UTF8.GetBytes($metadata) | Set-Content -Path $WORKFILE_METADATA -Encoding Byte
 
     $WORKFILE_MAIN = '.\main.ogg'
     $WORKFILE_REPEAT = '.\repeat.ogg'
