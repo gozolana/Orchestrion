@@ -37,7 +37,7 @@ process {
     $WORKFILE_FADE = '.\fade.ogg'
     if ($null -eq $loopend) {
         # リピートtagなし
-        & $FFPROBE_CMD -v quiet -y -i $oggPath $outputPath
+        & $FFMPEG_CMD -v quiet -y -i $oggPath $outputPath
         $loopcount = -1
         $comment = ''
     } elseif ($duration_ts - $loopend -eq 1) {
